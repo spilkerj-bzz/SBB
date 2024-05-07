@@ -1,0 +1,243 @@
+openapi: 3.0.1
+info:
+  title: AccessBooking
+  version: 1.0.0.8
+  contact:
+    name: DSO IMS Team Zutritt
+    email: dso.ims-betrieb@sbb.ch
+  license:
+    name: SBB
+    url: https://developer.sbb.ch/license
+  description: ""
+servers:
+- url: /accessbooking
+- description: External Endpoint
+  url: https://accessbooking.api.sbb.ch:443
+paths:
+  /api/readaccessstructure:
+    post:
+      tags:
+      - Access Structure
+      summary: Get Access Structure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscriberIdentification'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/accessStructureResponse'
+        "204":
+          description: No data found
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Error message
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Error message
+  /api/bookings:
+    put:
+      tags:
+      - Bookings
+      summary: Update Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/bookingPut'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/bookingResponse'
+    post:
+      tags:
+      - Bookings
+      summary: Create Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/bookingPost'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/bookingResponse'
+  /api/bookings/delete:
+    post:
+      tags:
+      - Bookings
+      summary: Delete Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/bookingDelete'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/bookingResponse'
+components:
+  schemas:
+    bookingResponse:
+      type: object
+      properties:
+        subscriberId:
+          description: ID of subscriber
+          type: string
+        externalPositionId:
+          description: Position ID in subsystem
+          type: string
+        qapPositionId:
+          description: Position ID in qAccess
+          type: string
+        state:
+          description: "Operation state (Success, Error)"
+          type: string
+        errorNumber:
+          description: Error number
+          type: string
+        errorMessage:
+          description: Error description
+          type: string
+    bookingDelete:
+      type: object
+      properties:
+        subscriberId:
+          description: ID of subscriber
+          type: string
+        externalPositionId:
+          description: Position ID in subsystem
+          type: string
+        qapPositionId:
+          description: Position ID in qAccess
+          type: string
+    bookingPut:
+      type: object
+      properties:
+        subscriberId:
+          description: ID of subscriber
+          type: string
+        externalPositionId:
+          description: Position ID in subsystem
+          type: string
+        qapPositionId:
+          description: Position ID in qAccess
+          type: string
+        bookingReference:
+          description: Booking reference in subsystem
+          type: string
+        personalNumber:
+          description: Personal number
+          type: string
+        firstName:
+          description: First name
+          type: string
+        lastName:
+          description: Last name
+          type: string
+        mediaNumber:
+          description: Access media number
+          type: string
+        access:
+          description: List of access elements
+          type: array
+          items:
+            $ref: '#/components/schemas/access'
+    bookingPost:
+      type: object
+      properties:
+        subscriberId:
+          description: ID of subscriber
+          type: string
+        externalPositionId:
+          description: Position ID in subsystem
+          type: string
+        qapPositionId:
+          description: Position ID in qAccess
+          type: string
+        bookingReference:
+          description: Booking reference in subsystem
+          type: string
+        personalNumber:
+          description: Personal number
+          type: string
+        firstName:
+          description: First name
+          type: string
+        lastName:
+          description: Last name
+          type: string
+        mediaNumber:
+          description: Media number (Badge ID)
+          type: string
+        access:
+          description: List of access elements
+          type: array
+          items:
+            $ref: '#/components/schemas/access'
+    access:
+      type: object
+      properties:
+        accessElementId:
+          description: Access element ID
+          type: string
+        validFrom:
+          description: Access valid from
+          type: string
+          format: date-time
+        validTo:
+          description: Access valid to
+          type: string
+          format: date-time
+    accessStructureResponse:
+      type: object
+      properties:
+        accessElementId:
+          description: Access element ID
+          type: string
+        accessElementName:
+          description: Access element mnme
+          type: string
+    subscriberIdentification:
+      type: object
+      properties:
+        subscriberId:
+          description: ID of subscriber
+          type: string
